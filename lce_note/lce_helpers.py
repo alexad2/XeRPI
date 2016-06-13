@@ -228,7 +228,7 @@ def txt_to_plot(file_name, peak, bin_settings, diff = False):
     
 ##################################################################################################
 
-def difference_in_ly(file1, file2):
+def difference_in_ly(file1, file2, outfile):
     
     # GIVES ABSOLUTE VALUE OF DIFFERENCES
     
@@ -293,7 +293,7 @@ def difference_in_ly(file1, file2):
     
         
         
-        f = open('difference_in_ly.txt', 'w')
+        f = open(outfile, 'w')
         f.write('z    t    r    zmid    tmid    rmid    ly    errly')
         for i in range(len(bin_dict_1['z'])):
             f.write('\n' + str(bin_dict_1['z'][i])+'    '+str(bin_dict_1['t'][i])+'    '+str(bin_dict_1['r'][i])+'    '
@@ -306,7 +306,7 @@ def difference_in_ly(file1, file2):
 
 # File 1: Xerawdp, File 2: Pax
 
-def triple_plot(file1, file2, fileDiff, peak, bin_settings):
+def triple_plot(file1, file2, fileDiff, peak, bin_settings, figure_name):
     
     fl = open(file1, 'r')
     ls = fl.readline().strip().split(" ")
@@ -574,7 +574,7 @@ def triple_plot(file1, file2, fileDiff, peak, bin_settings):
         pad.SetTopMargin(0.2)
         pad.SetBottomMargin(0)
     
-    c1.Print('triple_plot.png')
+    c1.Print(figure_name)
     c1.Clear()
     return
 
@@ -582,7 +582,7 @@ def triple_plot(file1, file2, fileDiff, peak, bin_settings):
 
 # df1: Xerawdp, df2: Pax
 
-def df_to_plot (df1, df2, dfDiff, peak, bin_settings):
+def df_to_plot (df1, df2, dfDiff, peak, bin_settings, figure_name):
 
     dummyH_list=[[],[],[]]
     
@@ -765,6 +765,6 @@ def df_to_plot (df1, df2, dfDiff, peak, bin_settings):
         pad.SetTopMargin(0.2)
         pad.SetBottomMargin(0)
     
-    c1.Print('triple_plot.png')
+    c1.Print(figure_name)
     c1.Clear()
     return
