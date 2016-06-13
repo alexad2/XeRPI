@@ -2,7 +2,7 @@ import hax
 
 class Kr83m_Basic(hax.minitrees.TreeMaker):
     
-    __version__ = '0.0.2'
+    __version__ = '0.0.3'
     extra_branches = ['dataset_name','peaks.n_contributing_channels','peaks.hit_time_mean','peaks.left','peaks.right']
     
     def extract_data(self, event):
@@ -73,9 +73,9 @@ class Kr83m_Basic(hax.minitrees.TreeMaker):
                                 s10Time = peaks[s10].hit_time_mean,
                                 s10LeftEdge = peaks[s10].left*10.0,
                                 s10RightEdge = peaks[s10].right*10.0,
-                                s10x = interactions[0].x,
-                                s10y = interactions[0].y,
-                                s10z = interactions[0].z,
+                                i0x = interactions[0].x,
+                                i0y = interactions[0].y,
+                                i0z = interactions[0].z,
                                 s20Area = peaks[s20].area,
                                 cs20Area = peaks[s20].area*interactions[0].s2_area_correction,
                                 s20Coin = peaks[s20].n_contributing_channels,
@@ -88,9 +88,9 @@ class Kr83m_Basic(hax.minitrees.TreeMaker):
                                 s11Time = peaks[s11].hit_time_mean,
                                 s11LeftEdge = peaks[s11].left*10.0,
                                 s11RightEdge = peaks[s11].right*10.0,
-                                s11x = interactions[sInt].x,
-                                s11y = interactions[sInt].y,
-                                s11z = interactions[sInt].z ))
+                                i1x = interactions[sInt].x,
+                                i1y = interactions[sInt].y,
+                                i1z = interactions[sInt].z ))
     
         if s21 != -1:
             s21Area = peaks[s21].area
