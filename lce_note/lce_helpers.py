@@ -26,11 +26,11 @@ def xe100_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
     if peak == 's10':
         s1_spec_max = 200
         s1_ene = 32.1498 # from nuclear data sheets a=83
-        postion = 'i0'
+        position = 'i0'
     elif peak == 's11':
         s1_spec_max = 100
         s1_ene = 9.4051
-        position = 'i1'
+        position = 'i0' # only ever consider position of 1st s1
     else:
         print('error: invalid peak')
         return()
@@ -42,7 +42,7 @@ def xe100_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
     
         z_min = z_i * z_width
         z_max = (z_i+1) * z_width
-        df_z = df[ (df[position+'z']>z_min) & (df[position+'z']<=z_max) ]
+        df_z = df[ (df[position+'z']<z_min) & (df[position+'z']>=z_max) ]
     
         for r_i in range(len(A_r)):
         
@@ -78,7 +78,7 @@ def xe100_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
                 for i in range(len(df_phi[peak+'Area'])):
                     hist.Fill(df_phi[peak+'Area'].values[i])
                 hist.SetTitle(peak+' Spectrum: \
-                              %.1f < z < %.1f, %.1f < r < %.1f, %.1f < phi < %.1f,'
+                              %.1f > z > %.1f, %.1f < r < %.1f, %.1f < phi < %.1f,'
                               %(z_min, z_max, r_min, r_max, phi_min, phi_max))
                 hist.GetXaxis().SetTitle(peak+'Area (pe)')
                 hist.GetXaxis().CenterTitle()
@@ -250,15 +250,6 @@ def difference_in_ly(file1, file2, outfile):
         bin_array_new_1 = bin_array.tolist()
         bin_array_new_1.sort(key = lambda x: (float(x[0]), float(x[2]), float(x[1])))
        
-        for j in range(len(bin_array_new_1)):
-            
-            if bin_array_new_1[j][3] < -10:
-                bin_array_new_1[j][3] = bin_array_new_1[j][3] / 10
-                bin_array_new_1[j][5] = bin_array_new_1[j][5] / 10
-            
-            if bin_array_new_1[j][3] < 0:
-                bin_array_new_1[j][3] = bin_array_new_1[j][3] * -1
-
         bin_dict_1 = defaultdict(list)
         for i in range(len(bin_array_new_1[0])):
             for j in range(len(bin_array_new_1)):
@@ -276,15 +267,6 @@ def difference_in_ly(file1, file2, outfile):
         bin_array = np.loadtxt(file2, skiprows=1)
         bin_array_new_2 = bin_array.tolist()
         bin_array_new_2.sort(key = lambda x: (float(x[0]), float(x[2]), float(x[1])))
-       
-        for j in range(len(bin_array_new_2)):
-            
-            if bin_array_new_2[j][3] < -10:
-                bin_array_new_2[j][3] = bin_array_new_2[j][3] / 10
-                bin_array_new_2[j][5] = bin_array_new_2[j][5] / 10
-            
-            if bin_array_new_2[j][3] < 0:
-                bin_array_new_2[j][3] = bin_array_new_2[j][3] * -1
 
         bin_dict_2 = defaultdict(list)
         for i in range(len(bin_array_new_2[0])):
@@ -319,15 +301,6 @@ def triple_plot(file1, file2, fileDiff, peak, bin_settings, figure_name):
     bin_array_new = bin_array.tolist()
     bin_array_new.sort(key = lambda x: (float(x[0]), float(x[2]), float(x[1])))
 
-    for j in range(len(bin_array_new)):
-
-        if bin_array_new[j][3] < -10:
-            bin_array_new[j][3] = bin_array_new[j][3] / 10
-            bin_array_new[j][5] = bin_array_new[j][5] / 10
-
-        if bin_array_new[j][3] < 0:
-            bin_array_new[j][3] = bin_array_new[j][3] * -1
-
     bin_dict = defaultdict(list)
     for i in range(len(bin_array_new[0])):
         for j in range(len(bin_array_new)):
@@ -347,15 +320,6 @@ def triple_plot(file1, file2, fileDiff, peak, bin_settings, figure_name):
     bin_array_new = bin_array.tolist()
     bin_array_new.sort(key = lambda x: (float(x[0]), float(x[2]), float(x[1])))
 
-    for j in range(len(bin_array_new)):
-
-        if bin_array_new[j][3] < -10:
-            bin_array_new[j][3] = bin_array_new[j][3] / 10
-            bin_array_new[j][5] = bin_array_new[j][5] / 10
-
-        if bin_array_new[j][3] < 0:
-            bin_array_new[j][3] = bin_array_new[j][3] * -1
-
     bin_dict = defaultdict(list)
     for i in range(len(bin_array_new[0])):
         for j in range(len(bin_array_new)):
@@ -374,15 +338,6 @@ def triple_plot(file1, file2, fileDiff, peak, bin_settings, figure_name):
     bin_array = np.loadtxt(fileDiff, skiprows=1)
     bin_array_new = bin_array.tolist()
     bin_array_new.sort(key = lambda x: (float(x[0]), float(x[2]), float(x[1])))
-
-    for j in range(len(bin_array_new)):
-
-        if bin_array_new[j][3] < -10:
-            bin_array_new[j][3] = bin_array_new[j][3] / 10
-            bin_array_new[j][5] = bin_array_new[j][5] / 10
-
-        if bin_array_new[j][3] < 0:
-            bin_array_new[j][3] = bin_array_new[j][3] * -1
 
     bin_dict = defaultdict(list)
     for i in range(len(bin_array_new[0])):
@@ -422,34 +377,34 @@ def triple_plot(file1, file2, fileDiff, peak, bin_settings, figure_name):
     vline4.Draw()
     
     title1 = ROOT.TPaveText(0.11, 0.98, 0.22, 0.995)
-    title1.AddText('0.00 cm < z < 3.03 cm')
+    title1.AddText('0.00 cm > z > -3.03 cm')
     title1.Draw()
     title2 = ROOT.TPaveText(0.44, 0.98, 0.55, 0.995)
-    title2.AddText('3.03 cm < z < 6.06 cm')
+    title2.AddText('-3.03 cm > z > -6.06 cm')
     title2.Draw()
     title3 = ROOT.TPaveText(0.77, 0.98, 0.88, 0.995)
-    title3.AddText('6.06 cm < z < 9.09 cm')
+    title3.AddText('-6.06 cm > z > -9.09 cm')
     title3.Draw()
     title4 = ROOT.TPaveText(0.11, 0.73, 0.22, 0.745)
-    title4.AddText('9.09 cm < z < 12.12 cm')
+    title4.AddText('-9.09 cm > z > -12.12 cm')
     title4.Draw()
     title5 = ROOT.TPaveText(0.44, 0.73, 0.55, 0.745)
-    title5.AddText('12.12 cm < z < 15.15 cm')
+    title5.AddText('-12.12 cm > z > -15.15 cm')
     title5.Draw()
     title6 = ROOT.TPaveText(0.77, 0.73, 0.88, 0.745)
-    title6.AddText('15.15 cm < z < 18.18 cm')
+    title6.AddText('-15.15 cm > z > -18.18 cm')
     title6.Draw()
     title7 = ROOT.TPaveText(0.11, 0.48, 0.22, 0.495)
-    title7.AddText('18.18 cm < z < 21.21 cm')
+    title7.AddText('-18.18 cm > z > -21.21 cm')
     title7.Draw()
     title8 = ROOT.TPaveText(0.44, 0.48, 0.55, 0.495)
-    title8.AddText('21.21 cm < z < 24.24 cm')
+    title8.AddText('-21.21 cm > z > -24.24 cm')
     title8.Draw()
     title9 = ROOT.TPaveText(0.77, 0.48, 0.88, 0.495)
-    title9.AddText('24.24 cm < z < 27.27 cm')
+    title9.AddText('-24.24 cm > z > -27.27 cm')
     title9.Draw()
     title10 = ROOT.TPaveText(0.11, 0.23, 0.22, 0.245)
-    title10.AddText('27.27 cm < z < 30.30 cm')
+    title10.AddText('-27.27 cm > z > -30.30 cm')
     title10.Draw()
     
     z_hists_1 = []

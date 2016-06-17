@@ -54,7 +54,7 @@ def build_xerawdp_df(xerawdpTree):
         
         data['i0x'].append( xerawdpTree.cS2sPosNn[0][0]/10.0 )
         data['i0y'].append( xerawdpTree.cS2sPosNn[0][1]/10.0 )
-        data['i0z'].append( -xerawdpTree.cS2sPosNn[0][2]/10.0 )
+        data['i0z'].append( xerawdpTree.cS2sPosNn[0][2]/10.0 )
         
         try:
             data['cs21Area'].append( xerawdpTree.cS2sTot[1] )
@@ -66,7 +66,7 @@ def build_xerawdp_df(xerawdpTree):
             
             data['i1x'].append( xerawdpTree.cS2sPosNn[1][0]/10.0 )
             data['i1y'].append( xerawdpTree.cS2sPosNn[1][1]/10.0 )
-            data['i1z'].append( -xerawdpTree.cS2sPosNn[1][2]/10.0 )
+            data['i1z'].append( xerawdpTree.cS2sPosNn[1][2]/10.0 )
         except IndexError:
             data['cs21Area'].append(0.0)
             data['s21Area'].append(0.0)
