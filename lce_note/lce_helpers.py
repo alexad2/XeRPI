@@ -142,37 +142,10 @@ def lyBins_to_txt(bin_data,out_file):
  
 ##################################################################################################
 
-def txt_to_plot(file_name, peak, bin_settings, diff = False):
-    if not isinstance(file_name, str): 
-        print ('Error: arg must be str')
-    else:
-        fl = open(file_name, 'r')
-        ls = fl.readline().strip().split(" ")
-        labels = []
-        for item in ls:
-            if item != '':
-                labels.append(item)
-        fl.close()
-        bin_array = np.loadtxt(file_name, skiprows=1)
-        bin_array_new = bin_array.tolist()
-        bin_array_new.sort(key = lambda x: (float(x[0]), float(x[2]), float(x[1])))
-       
-        for j in range(len(bin_array_new)):
-            
-            if bin_array_new[j][3] < -10:
-                bin_array_new[j][3] = bin_array_new[j][3] / 10
-                bin_array_new[j][5] = bin_array_new[j][5] / 10
-            
-            if bin_array_new[j][3] < 0:
-                bin_array_new[j][3] = bin_array_new[j][3] * -1
-
-        bin_dict = defaultdict(list)
-        for i in range(len(bin_array_new[0])):
-            for j in range(len(bin_array_new)):
-                bin_dict[labels[i]].append(bin_array_new[j][i])
-                
-                
-                
+def bins_to_plot(bin_dict, peak, bin_settings, outfile, diff = False):
+    if False:
+        x=1
+    else:     
         df = pd.DataFrame(bin_dict)
         dummyH_list=[]
 
@@ -222,7 +195,7 @@ def txt_to_plot(file_name, peak, bin_settings, diff = False):
                 z_hists[z_i][i].GetZaxis().SetTitleOffset(1.8)
                 z_hists[z_i][i].Draw('pol colz a same') 
 
-        c1.Print(file_name.split('.')[0] + '_' + peak + '.png')
+        c1.Print(outfile)
         c1.Clear()
         return
     
