@@ -87,6 +87,75 @@ def cut_compare(df_xerawdp,df_pax,cut_info):
     
     return figure
 
+def cut_review(df_pax,cut_info):
+    
+    key, cut_min, cut_max, bins, x_min, x_max, units = cut_info
+    figure = './KrLce_Figures/f_'+key+'Hists.png'
+    
+    pax_total = len(df_pax.values)
+    
+    df_pax_new = df_pax
+    
+    # Create and fill hists
+    hist = ROOT.TH1D('','',bins,x_min,x_max)
+    df = df_pax
+    title = 'Pax'
+    for j in range(len(df.values)):
+        hist.Fill(df[key].values[j])
+            
+    hist.GetXaxis().SetTitle('%s (%s)'%(key,units))
+    hist.GetXaxis().CenterTitle()
+    hist.SetTitle(title+' '+key+' Histogram')
+    hist.SetMinimum(10)
+    hist.SetLineWidth(3)
+            
+    y_max = 1.2*max([hist.GetMaximum(),hist.GetMaximum()])
+    
+    cut_lines = []
+    cut_str = ''
+    if cut_min != 'none':
+        
+        cut_lines.append(ROOT.TLine(cut_min,0,cut_min,y_max))
+        cut_lines[len(cut_lines)-1].SetLineColor(2)
+        cut_lines[len(cut_lines)-1].SetLineWidth(3)
+        
+        cut_str += str(cut_min)+' <= '
+        df_pax_new = df_pax_new[ df_pax_new[key]>=cut_min ]
+        
+    cut_str += key
+            
+    if cut_max != 'none':
+        
+        cut_lines.append(ROOT.TLine(cut_max,0,cut_max,y_max))
+        cut_lines[len(cut_lines)-1].SetLineColor(6)
+        cut_lines[len(cut_lines)-1].SetLineWidth(3)
+        
+        cut_str += ' <= '+str(cut_max)
+        
+        df_pax_new = df_pax_new[ df_pax_new[key]<=cut_max ]
+                    
+    pax_acceptance = len(df_pax_new.values)/pax_total
+            
+    c1 = ROOT.TCanvas('','',1600,700)
+    ROOT.gStyle.SetOptStat(0)
+    
+    c1.SetLogy()
+    hist.SetMaximum(y_max)
+    hist.Draw('hist')
+    for line in cut_lines:
+        line.Draw()
+            
+    pt = ROOT.TPaveText(.58, .68, .88, .88, 'NDC')
+    pt.AddText('Selection: '+cut_str)
+    pt.AddText('Acceptance Ratio: %1.3f'%pax_acceptance)
+    pt.Draw()
+        
+    c1.Print(figure)
+    c1.Clear()
+    
+    return figure
+
+
 def apply_cuts(df,cuts):
     
     df_new = df

@@ -15,7 +15,7 @@ def atan(y, x):
 
 ##################################################################################################
 
-def xe100_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
+def xe_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
     
     R, Z, A_r, N_phi, N_z = bin_settings
     z_width = Z / N_z
@@ -24,7 +24,7 @@ def xe100_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
         phi_widths.append(2*np.pi/n)
     
     if peak == 's10':
-        s1_spec_max = 200
+        s1_spec_max = 20000
         s1_ene = 32.1498 # from nuclear data sheets a=83
         position = 'i0'
     elif peak == 's11':
@@ -71,12 +71,20 @@ def xe100_to_lyBins(df,bin_settings,peak,bin_spec_dir='Bin_Hists'):
             
                 bin_data['N'].append(len(df_phi))
                 
-                
-                    
                 c1 = ROOT.TCanvas('','', 800, 700)
                 hist = ROOT.TH1D('','', 100, 0, s1_spec_max)
                 for i in range(len(df_phi[peak+'Area'])):
                     hist.Fill(df_phi[peak+'Area'].values[i])
+                    
+                if hist.GetEntries() < 1:
+                    bin_data['ly'].append(-1)
+                    bin_data['errly'].append(-1)
+                    
+                    bin_data['S1AreaMean'].append(-1)
+                    bin_data['S1AreaMeanError'].append(-1)
+                    
+                    continue
+                    
                 hist.SetTitle(peak+' Spectrum: \
                               %.1f > z > %.1f, %.1f < r < %.1f, %.1f < phi < %.1f,'
                               %(z_min, z_max, r_min, r_max, phi_min, phi_max))
@@ -157,6 +165,8 @@ def bins_to_plot(bin_dict, peak, bin_settings, outfile, diff = False):
         
         max_ly = max(df['ly'])
         min_ly = min(df['ly'])
+        
+        zjump = bin_settings[1]/bin_settings[4]
 
         for z_i in range(int(bin_settings[4])):
             dummyH_list.append(ROOT.TH2D("","",100,-1*bin_settings[0],bin_settings[0],100,-1*bin_settings[0],bin_settings[0]))
@@ -175,7 +185,7 @@ def bins_to_plot(bin_dict, peak, bin_settings, outfile, diff = False):
             c1.cd(z_i+1)
 
             dummyH_list[z_i].Draw('colz')
-            dummyH_list[z_i].SetTitle("%.2fcm < z < %.2fcm" %(z_i*3.03*-1, (z_i+1)*3.03*-1 ))
+            dummyH_list[z_i].SetTitle("%.2fcm < z < %.2fcm" %(z_i*zjump, (z_i+1)*zjump ))
             dummyH_list[z_i].GetZaxis().SetTitle("<s1Area>")
             dummyH_list[z_i].GetXaxis().SetTitle("x position [cm]")
             dummyH_list[z_i].GetXaxis().CenterTitle()
